@@ -19,15 +19,25 @@ public class SocialMediaService {
     }
 
     public Account registerUser(Account account){
+        Account registeredAccount = socialmediaDAO.getAccountByUserName(account.getUsername());
 
-        return socialmediaDAO.insertAccount(account);
+        if(registeredAccount == null && account.getUsername().length() != 0 && account.getPassword().length() >= 4){
+            return socialmediaDAO.insertAccount(account);
+        }
+
+        return null;
 
     }
 
     public Account loginUser(Account account){
+        Account registeredAccount = socialmediaDAO.getAccountByUserName(account.getUsername());
 
         
-        return socialmediaDAO.loginAccount(account);
+        if(registeredAccount != null && account.getUsername() == registeredAccount.getUsername() && account.getPassword() == registeredAccount.getPassword()){
+            return socialmediaDAO.loginAccount(account);
+        }
+        
+        return null;
     }
 
     public List<Message> getAllMessages(){
@@ -44,7 +54,7 @@ public class SocialMediaService {
         if(socialmediaDAO.getMessageByID(message_id) == null){
             return null;
         }
-
+        
         return socialmediaDAO.deleteMessageByID(message_id);
     }
     

@@ -1,5 +1,7 @@
 package DAO;
 
+import static org.mockito.ArgumentMatchers.refEq;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ public class SocialMediaDAO {
         Connection connection = ConnectionUtil.getConnection();
         
         try{
-            String sql = "INSERT INTO Account (username, password) VALUES (?, ?);";
+            String sql = "INSERT INTO account (username, password) VALUES (?, ?);";
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
@@ -40,12 +42,17 @@ public class SocialMediaDAO {
         Connection connection = ConnectionUtil.getConnection();
 
         try{
-            String sql = "INSERT INTO Account (username, password) VALUES (?, ?);";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            String sql = "INSERT INTO account (username, password) VALUES (?, ?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             preparedStatement.executeUpdate();
 
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if(resultSet.next()){
+                int account_id = resultSet.getInt(1);
+                return new Account(account_id, account.getUsername(), account.getPassword());
+            }
         } catch(SQLException e){
             System.out.println(e.getMessage());
         }
@@ -57,7 +64,7 @@ public class SocialMediaDAO {
         Connection connection = ConnectionUtil.getConnection();
 
         try{
-            String sql = "SELECT * FROM Message;";
+            String sql = "SELECT * FROM message;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -79,7 +86,7 @@ public class SocialMediaDAO {
         Connection connection = ConnectionUtil.getConnection();
 
         try{
-            String sql = "SELECT * FROM Message WHERE message_id = ?;";
+            String sql = "SELECT * FROM message WHERE message_id = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, message_id);
             
@@ -103,14 +110,17 @@ public class SocialMediaDAO {
         Connection connection = ConnectionUtil.getConnection();
 
         try{
-            String sql = ";";
+            String sql = "DELETE FROM message Where message_id = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
+            preparedStatement.setInt(1, message_id);
+            preparedStatement.executeUpdate();
 
         } catch(SQLException e){
             System.out.println(e.getMessage());
         }
+
         return null;
+        
     }
 
     public void updateMessageByID(int message_id, Message message){
@@ -137,7 +147,7 @@ public class SocialMediaDAO {
         Connection connection = ConnectionUtil.getConnection();
 
         try{
-            String sql = "SELECT * FROM Message WHERE posted_by = ?;";
+            String sql = "SELECT * FROM message WHERE posted_by = ?;";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, account_id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -153,6 +163,29 @@ public class SocialMediaDAO {
         }
 
         return messages;
+    }
+
+    public Account getAccountByUserName(String username){
+        Connection connection = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "SELECT * FROM account WHERE username = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                Account account = new Account(resultSet.getInt("account_id"), resultSet.getString("username"), resultSet.getString("password"));
+                return account;
+            }
+
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+
+
     }
 
 }

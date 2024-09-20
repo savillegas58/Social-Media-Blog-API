@@ -21,6 +21,10 @@ public class SocialMediaController {
 
     SocialMediaService socialMediaService;
 
+    public SocialMediaController(){
+        socialMediaService = new SocialMediaService();
+    }
+
 
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
@@ -68,7 +72,7 @@ public class SocialMediaController {
         Account loggedInAccount = socialMediaService.loginUser(account);
 
         if(loggedInAccount == null){
-            context.status(400);
+            context.status(401);
         } else{
             context.json(om.writeValueAsString(loggedInAccount));
         }
@@ -80,6 +84,7 @@ public class SocialMediaController {
     private void getMessageHandler(Context context){
         int message_id = Integer.parseInt(context.pathParam("message_id"));
         context.json(socialMediaService.getMessageByID(message_id));
+        
 
 
     }
