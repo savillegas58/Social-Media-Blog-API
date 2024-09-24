@@ -32,11 +32,10 @@ public class SocialMediaService {
     public Account loginUser(Account account){
         Account registeredAccount = socialmediaDAO.getAccountByUserName(account.getUsername());
 
-        
         if(registeredAccount != null && account.getUsername().equals(registeredAccount.getUsername()) && account.getPassword().equals(registeredAccount.getPassword())){
-            return socialmediaDAO.loginAccount(registeredAccount);
+            return registeredAccount;
         }
-        
+      
         return null;
     }
 
