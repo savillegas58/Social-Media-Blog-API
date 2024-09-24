@@ -1,7 +1,5 @@
 package DAO;
 
-
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,28 +35,6 @@ public class SocialMediaDAO {
         return null;
     }
 
-    // public Account loginAccount(Account account){
-    //     Connection connection = ConnectionUtil.getConnection();
-
-    //     try{
-    //         String sql = "INSERT INTO account (username, password) VALUES (?, ?);";
-    //         PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-    //         preparedStatement.setString(1, account.getUsername());
-    //         preparedStatement.setString(2, account.getPassword());
-    //         preparedStatement.executeUpdate();
-
-    //         ResultSet resultSet = preparedStatement.getGeneratedKeys();
-    //         if(resultSet.next()){
-    //             return new Account(account.getAccount_id(),account.getUsername(),account.getPassword());
-    //         }
-
-            
-
-    //     } catch(SQLException e){
-    //         System.out.println(e.getMessage());
-    //     }
-    //     return null;
-    // }
 
     public Message postMessage(Message message){
         Connection connection = ConnectionUtil.getConnection();
