@@ -42,11 +42,11 @@ public class SocialMediaService {
 
     public Message addMessage(Message message){
 
-        if(message.getMessage_text().isEmpty() || message.getMessage_text().length() <= 255 || socialmediaDAO.getAccountByID(message.getPosted_by()) != null || message.getMessage_text().length() != 0){
-            return socialmediaDAO.postMessage(message);
+        if(message.getMessage_text().isEmpty() || message.getMessage_text().length() > 255 || socialmediaDAO.getAccountByID(message.getPosted_by()) == null){
+            return null;
         }
         
-        return null;
+        return socialmediaDAO.postMessage(message);
     }
 
     public List<Message> getAllMessages(){
