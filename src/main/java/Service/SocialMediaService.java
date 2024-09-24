@@ -60,11 +60,11 @@ public class SocialMediaService {
     }
     public Message deleteMessageByID(int message_id){
 
-        if(socialmediaDAO.getMessageByID(message_id) == null){
-            return null;
+        if(socialmediaDAO.getMessageByID(message_id) != null){
+            return socialmediaDAO.deleteMessageByID(message_id);
         }
         
-        return socialmediaDAO.deleteMessageByID(message_id);
+        return null;
     }
     
     public Message updateMessageByID(int message_id, Message message){

@@ -105,11 +105,9 @@ public class SocialMediaController {
     private void deleteMessageHandler(Context context){
         int message_id = Integer.parseInt(context.pathParam("message_id"));
         Message deletedMessage = socialMediaService.deleteMessageByID(message_id);
-        if(deletedMessage == null){
-            context.status(400);
-        } else {
+        if(deletedMessage != null){
             context.json(deletedMessage);
-        }
+        } 
         
     }
     private void patchMessageHandler(Context context) throws JsonProcessingException{
