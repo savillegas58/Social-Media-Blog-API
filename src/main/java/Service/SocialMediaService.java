@@ -40,6 +40,15 @@ public class SocialMediaService {
         return null;
     }
 
+    public Message addMessage(Message message){
+
+        if(!message.getMessage_text().isEmpty() || message.getMessage_text().length() <= 255 || socialmediaDAO.getAccountByID(message.getPosted_by()) != null){
+            return socialmediaDAO.postMessage(message);
+        }
+        
+        return null;
+    }
+
     public List<Message> getAllMessages(){
 
         return socialmediaDAO.getAllMessages();
@@ -60,7 +69,7 @@ public class SocialMediaService {
     
     public Message updateMessageByID(int message_id, Message message){
         
-        if(socialmediaDAO.getMessageByID(message_id) == null){
+        if(socialmediaDAO.getMessageByID(message_id) == null || message.getMessage_text().isEmpty() || message.getMessage_text().length() > 255){
             return null;
         }
 

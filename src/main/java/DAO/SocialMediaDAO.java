@@ -1,12 +1,10 @@
 package DAO;
 
-import static org.mockito.ArgumentMatchers.refEq;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jetty.websocket.core.internal.messages.MessageWriter;
 
 import Model.Account;
 import Model.Message;
@@ -58,6 +56,31 @@ public class SocialMediaDAO {
         }
         return null;
     }
+
+    public Message postMessage(Message message){
+        Connection connection = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "INSERT INTO message (posted_by, message_text, time, time_posted_epoch) VALUES (?, ?);";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, message.getPosted_by());
+            preparedStatement.setString(2, message.getMessage_text());
+            preparedStatement.setLong(3, message.getTime_posted_epoch());
+            
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+            if(resultSet.next()){
+                int message_id = resultSet.getInt(1);
+                return new Message(message_id, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());
+            }
+
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
 
     public List<Message> getAllMessages(){
         List<Message> messages = new ArrayList<>();
@@ -186,6 +209,27 @@ public class SocialMediaDAO {
         return null;
 
 
+    }
+
+    public Account getAccountByID(int account_id){
+        Connection connection = ConnectionUtil.getConnection();
+
+        try{
+            String sql = "SELECT * FROM account WHERE account_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, account_id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if(resultSet.next()){
+                Account account = new Account(resultSet.getInt("account_id"), resultSet.getString("username"), resultSet.getString("password"));
+                return account;
+            }
+            
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        return null;
     }
 
 }

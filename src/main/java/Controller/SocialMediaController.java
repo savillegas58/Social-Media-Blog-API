@@ -36,6 +36,7 @@ public class SocialMediaController {
         app.get("example-endpoint", this::exampleHandler);
         app.post("/register", this::postRegisterHandler);
         app.post("/login", this::postLoginHandler);
+        app.post("/messages", this::postNewMessageHandler);
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageHandler);
         app.delete("/messages/{message_id}", this::deleteMessageHandler);
@@ -78,6 +79,19 @@ public class SocialMediaController {
         }
         
     }
+
+    private void postNewMessageHandler(Context context) throws JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Message message = om.readValue(context.body(), Message.class);
+        Message addedMessage = socialMediaService.addMessage(message);
+        
+        if(addedMessage == null){
+            context.status(400);
+        } else{
+            context.json(om.writeValueAsString(addedMessage));
+        }
+    }
+
     private void getAllMessagesHandler(Context context){
         context.json(socialMediaService.getAllMessages());
     }
@@ -94,7 +108,6 @@ public class SocialMediaController {
         if(deletedMessage == null){
             context.status(400);
         } else {
-            //Fix this?
             context.json(deletedMessage);
         }
         
