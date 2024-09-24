@@ -33,8 +33,8 @@ public class SocialMediaService {
         Account registeredAccount = socialmediaDAO.getAccountByUserName(account.getUsername());
 
         
-        if(registeredAccount != null && account.getUsername() == registeredAccount.getUsername() && account.getPassword() == registeredAccount.getPassword()){
-            return socialmediaDAO.loginAccount(account);
+        if(registeredAccount != null && account.getUsername().equals(registeredAccount.getUsername()) && account.getPassword().equals(registeredAccount.getPassword())){
+            return socialmediaDAO.loginAccount(registeredAccount);
         }
         
         return null;
@@ -42,7 +42,7 @@ public class SocialMediaService {
 
     public Message addMessage(Message message){
 
-        if(!message.getMessage_text().isEmpty() || message.getMessage_text().length() <= 255 || socialmediaDAO.getAccountByID(message.getPosted_by()) != null){
+        if(message.getMessage_text().isEmpty() || message.getMessage_text().length() <= 255 || socialmediaDAO.getAccountByID(message.getPosted_by()) != null || message.getMessage_text().length() != 0){
             return socialmediaDAO.postMessage(message);
         }
         
@@ -61,7 +61,9 @@ public class SocialMediaService {
     public Message deleteMessageByID(int message_id){
 
         if(socialmediaDAO.getMessageByID(message_id) != null){
-            return socialmediaDAO.deleteMessageByID(message_id);
+            Message message = socialmediaDAO.getMessageByID(message_id);
+            socialmediaDAO.deleteMessageByID(message_id);
+            return message;
         }
         
         return null;

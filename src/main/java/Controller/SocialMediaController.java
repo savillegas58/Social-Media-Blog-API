@@ -1,8 +1,5 @@
 package Controller;
 
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.ArgumentMatchers.intThat;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -71,7 +68,6 @@ public class SocialMediaController {
         ObjectMapper om = new ObjectMapper();
         Account account = om.readValue(context.body(), Account.class);
         Account loggedInAccount = socialMediaService.loginUser(account);
-
         if(loggedInAccount == null){
             context.status(401);
         } else{
@@ -97,7 +93,13 @@ public class SocialMediaController {
     }
     private void getMessageHandler(Context context){
         int message_id = Integer.parseInt(context.pathParam("message_id"));
-        context.json(socialMediaService.getMessageByID(message_id));
+        Message message = socialMediaService.getMessageByID(message_id);
+        if(message == null){
+            context.json("");
+        } else{
+            context.json(socialMediaService.getMessageByID(message_id));
+        }
+        
         
 
 
